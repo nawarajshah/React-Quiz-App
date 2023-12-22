@@ -1,8 +1,6 @@
 pipeline {
     agent {
-        docker {
-            image 'docker:stable'
-        }
+        agent
     }
 
     environment {

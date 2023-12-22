@@ -31,7 +31,6 @@ pipeline {
         //     }
         // }
 
-        stages {
         stage('Push Docker Image') {
             steps {
                 script {
@@ -40,7 +39,6 @@ pipeline {
                         // Build and push Docker image
                         // def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}", "-f Dockerfile .")
                         customImage.push()
-                        }
                     }
                 }
             }

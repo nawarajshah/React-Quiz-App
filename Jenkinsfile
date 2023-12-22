@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'docker' }
+    agent { dockerfile true }
 
     environment {
         DOCKER_REGISTRY = 'nawarajshah/quiz_pp'

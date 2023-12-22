@@ -1,5 +1,9 @@
 pipeline {
     agent { dockerfile true }
+    tools {
+        jdk 'OpenJDK8'
+        maven 'Maven3'
+    }
 
     environment {
         DOCKER_REGISTRY = 'nawarajshah/quiz_pp'

@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'Built-In Node'
+        any
     }
     
     tools {

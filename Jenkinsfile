@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = 'myapp'
         IMAGE_TAG = 'latest'
         EC2_INSTANCE_IP = '3.88.22.231'
-        EC2_INSTANCE_SSH_USER = 'ec2-user'
+        EC2_INSTANCE_SSH_USER = 'i-06d0dcfde6f92c549'
         SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
         DOCKER_CREDENTIALS_ID = 'dockerhubcredential'
         REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'
@@ -20,16 +20,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry('https://${DOCKER_REGISTRY}', 'docker-credentials-id') {
-        //                 docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}").push()
-        //             }
-        //         }
-        //     }
-        // }
 
         stage('Push Docker Image') {
             steps {

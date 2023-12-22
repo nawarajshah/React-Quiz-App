@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY = 'nawarajshah/quiz_pp'
         IMAGE_NAME = 'myapp'
         IMAGE_TAG = 'latest'
-        EC2_INSTANCE_IP = '3.95.134.75'
+        EC2_INSTANCE_IP = '3.88.22.231'
         EC2_INSTANCE_SSH_USER = 'ec2-user'
         SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
         DOCKER_CREDENTIALS_ID = 'dockerhubcredential'
@@ -37,7 +37,7 @@ pipeline {
                     // Authenticate with Docker registry using credentials
                     docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
                         // Build and push Docker image
-                        // def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}", "-f Dockerfile .")
+                        def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}", "-f Dockerfile .")
                         customImage.push()
                     }
                 }

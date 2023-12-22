@@ -8,7 +8,7 @@ pipeline {
         EC2_INSTANCE_IP = '3.95.134.75'
         EC2_INSTANCE_SSH_USER = 'ec2-user'
         SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
-        DOCKER_CREDENTIALS_ID = 'id'
+        DOCKER_CREDENTIALS_ID = 'dockerhubcredential'
         REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'
     }
 

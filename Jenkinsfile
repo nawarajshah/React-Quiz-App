@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY = 'nawarajshah/quiz_pp'
         IMAGE_NAME = 'myapp'
         IMAGE_TAG = 'latest'
-        EC2_INSTANCE_IP = '3.95.134.75:8080'
+        EC2_INSTANCE_IP = '3.95.134.75'
         EC2_INSTANCE_SSH_USER = 'ec2-user'
         SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
         REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'

@@ -1,18 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            // Use the official Jenkins agent Docker image
-            image 'jenkins/agent'
-            // Mount the Docker socket from the host to the container
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
 
     environment {
-        DOCKER_REGISTRY = 'your-docker-registry'
-        IMAGE_NAME = 'your-image-name'
+        DOCKER_REGISTRY = 'nawarajshah/quiz_pp'
+        IMAGE_NAME = 'myapp'
         IMAGE_TAG = 'latest'
-        EC2_INSTANCE_IP = 'your-ec2-instance-ip'
+        EC2_INSTANCE_IP = '3.95.134.75:8080'
         EC2_INSTANCE_SSH_USER = 'ec2-user'
         SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
         REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'
@@ -46,4 +39,21 @@ pipeline {
                         port: 22,
                         password: '',
                         identityFile: [$class: 'FileParameterValue', name: 'SSH_KEY', file: 'path/to/your/private-key.pem']
-                    ], command
+                    ], command: """
+                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} pull
+                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} up -d
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Docker image build, push, and deploy succeeded!'
+        }
+        failure {
+            echo 'Docker image build, push, and deploy failed!'
+        }
+    }
+}

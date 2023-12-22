@@ -1,41 +1,19 @@
 pipeline {
-    agent {
-        docker {
-            // Use the official Jenkins agent Docker image
-            image 'jenkins/agent'
-            // Mount the Docker socket and workspace from the host to the container
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home:/var/jenkins_home'
-        }
-    }
-
-    environment {
-        DOCKER_REGISTRY = 'nawarajshah/quiz_pp'
-        IMAGE_NAME = 'myapp'
-        IMAGE_TAG = 'latest'
-        EC2_INSTANCE_IP = '3.95.134.75'
-        EC2_INSTANCE_SSH_USER = 'ec2-user'
-        SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
-        REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'
-    }
+    agent any
 
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerCmd = "/usr/bin/docker"  // Specify the correct path
-                    sh "${dockerCmd} build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile ."
-                    }
+                    // Build Docker image steps
                 }
             }
-            // ... other stages
         }
 
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://${DOCKER_REGISTRY}', 'docker-credentials-id') {
-                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}").push()
-                    }
+                    // Push Docker image steps
                 }
             }
         }
@@ -43,15 +21,7 @@ pipeline {
         stage('Deploy to AWS EC2') {
             steps {
                 script {
-                    sshCommand remote: [
-                        host: EC2_INSTANCE_IP,
-                        user: EC2_INSTANCE_SSH_USER,
-                        port: 22,
-                        identityFile: [$class: 'FileParameterValue', name: 'SSH_KEY', file: 'path/to/your/private-key.pem']
-                    ], command: """
-                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} pull
-                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} up -d
-                    """
+                    // Deploy to AWS EC2 steps
                 }
             }
         }
@@ -65,3 +35,4 @@ pipeline {
             echo 'Docker image build, push, and deploy failed!'
         }
     }
+}

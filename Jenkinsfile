@@ -1,15 +1,27 @@
 pipeline {
-  agent { dockerfile true } // Use Dockerfile as the agent for the pipeline
-
-  stages {
-    stage('Test') {
-      steps {
-        sh '''
-          curl --version // Check the version of curl
-          node --version // Check the version of Node.js
-          npm --version  // Check the version of npm
-        '''
-      }
+    agent any
+    tools {
+        nodejs "NodeJS 21"
     }
-  }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+                // Replace with your deployment commands
+            }
+        }
+    }
 }

@@ -1,10 +1,7 @@
 pipeline {
     agent {
         docker {
-            // Use the official Jenkins agent Docker image
-            image 'jenkins/agent'
-            // Mount the Docker socket and workspace from the host to the container
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home:/var/jenkins_home'
+            image 'docker:stable'
         }
     }
 

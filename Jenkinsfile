@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        any
-    }
+    agent any
     
     tools {
         jdk 'OpenJDK8'

@@ -22,9 +22,12 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}", "-f Dockerfile .")
+                    def dockerCmd = "/usr/bin/docker"  // Specify the correct path
+                    sh "${dockerCmd} build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile ."
+                    }
                 }
             }
+            // ... other stages
         }
 
         stage('Push Docker Image') {

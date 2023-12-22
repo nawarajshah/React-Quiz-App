@@ -1,34 +1,48 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_REGISTRY = 'your-docker-registry'
+        IMAGE_NAME = 'your-image-name'
+        IMAGE_TAG = 'latest'
+        EC2_INSTANCE_IP = 'your-ec2-instance-ip'
+        EC2_INSTANCE_SSH_USER = 'ec2-user'
+        SSH_CREDENTIALS_ID = 'your-ssh-credentials-id'
+        REMOTE_DOCKER_COMPOSE_FILE = 'path/to/your/docker-compose.yml'
+    }
+
     stages {
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Assuming Maven is used for building
-                    sh 'mvn clean install'
+                    docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}", "-f Dockerfile .")
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // Assuming you have a deployment script or command
-                    sh './deploy.sh'
-                }
-            }
-        }
-
-        stage('Push') {
-            steps {
-                script {
-                    // Assuming Docker is used for building and pushing images
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'docker build -t your-image-name .'
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                        sh 'docker push your-image-name'
+                    docker.withRegistry('https://${DOCKER_REGISTRY}', 'docker-credentials-id') {
+                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
+                }
+            }
+        }
+
+        stage('Deploy to AWS EC2') {
+            steps {
+                script {
+                    sshCommand remote: [
+                        host: EC2_INSTANCE_IP,
+                        user: EC2_INSTANCE_SSH_USER,
+                        port: 22,
+                        password: '',
+                        identityFile: [$class: 'FileParameterValue', name: 'SSH_KEY', file: 'path/to/your/private-key.pem']
+                    ], command: """
+                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} pull
+                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} up -d
+                    """
                 }
             }
         }
@@ -36,10 +50,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline successfully completed!'
+            echo 'Docker image build, push, and deploy succeeded!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Docker image build, push, and deploy failed!'
         }
     }
 }

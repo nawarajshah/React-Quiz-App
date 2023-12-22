@@ -1,5 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            // Use the official Jenkins agent Docker image
+            image 'jenkins/agent'
+            // Mount the Docker socket from the host to the container
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         DOCKER_REGISTRY = 'your-docker-registry'
@@ -39,21 +46,4 @@ pipeline {
                         port: 22,
                         password: '',
                         identityFile: [$class: 'FileParameterValue', name: 'SSH_KEY', file: 'path/to/your/private-key.pem']
-                    ], command: """
-                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} pull
-                        docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} up -d
-                    """
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Docker image build, push, and deploy succeeded!'
-        }
-        failure {
-            echo 'Docker image build, push, and deploy failed!'
-        }
-    }
-}
+                    ], command

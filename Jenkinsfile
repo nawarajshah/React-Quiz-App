@@ -1,5 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            // Use the official Jenkins agent Docker image
+            image 'jenkins/agent'
+            // Mount the Docker socket and workspace from the host to the container
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home:/var/jenkins_home'
+        }
+    }
 
     environment {
         DOCKER_REGISTRY = 'nawarajshah/quiz_pp'
@@ -37,7 +44,6 @@ pipeline {
                         host: EC2_INSTANCE_IP,
                         user: EC2_INSTANCE_SSH_USER,
                         port: 22,
-                        password: '',
                         identityFile: [$class: 'FileParameterValue', name: 'SSH_KEY', file: 'path/to/your/private-key.pem']
                     ], command: """
                         docker-compose -f ${REMOTE_DOCKER_COMPOSE_FILE} pull

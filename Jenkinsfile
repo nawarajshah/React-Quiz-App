@@ -65,4 +65,3 @@ pipeline {
             echo 'Docker image build, push, and deploy failed!'
         }
     }
-}
